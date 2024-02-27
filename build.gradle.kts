@@ -7,6 +7,8 @@ plugins {
 	kotlin("jvm") version "1.9.22"
 	kotlin("plugin.spring") version "1.9.22"
 	kotlin("plugin.jpa") version "1.9.22"
+	kotlin("kapt") version "1.9.22"
+	idea
 }
 
 group = "CoBo"
@@ -27,14 +29,37 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
+
+	//jpa
+	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+
+	//swagger
+	implementation("com.querydsl:querydsl-jpa:5.0.0")
+	kapt("com.querydsl:querydsl-apt:5.0.0:jpa")
+
+	//lombok
 	compileOnly("org.projectlombok:lombok")
-	runtimeOnly("com.mysql:mysql-connector-j")
 	annotationProcessor("org.projectlombok:lombok")
+
+	//mysql
+	runtimeOnly("com.mysql:mysql-connector-j")
+
+	//swagger
+	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
+
+	//jwt
+	implementation("io.jsonwebtoken:jjwt:0.9.1")
+	implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-validation")
+	implementation("javax.xml.bind:jaxb-api:2.4.0-b180830.0359")
+
+	//kakao gson
+	implementation("com.google.code.gson:gson:2.10.1")
+
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.security:spring-security-test")
@@ -49,4 +74,12 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+
+idea{
+	module{
+		val kaptMain = file("build/generated/source/kapt/main")
+		sourceDirs.add(kaptMain)
+		generatedSourceDirs.add(kaptMain)
+	}
 }
