@@ -23,7 +23,7 @@ class JwtTokenProvider(
             .body.get("userId", java.lang.Integer::class.java)
     }
 
-    fun isAccessToken(token: String, secretKey: String): Boolean{
+    fun isAccessToken(token: String): Boolean{
         return Jwts.parser()
             .setSigningKey(secretKey)
             .parseClaimsJws(token)
