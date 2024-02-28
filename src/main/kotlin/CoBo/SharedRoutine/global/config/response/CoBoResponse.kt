@@ -5,26 +5,13 @@ import org.springframework.http.ResponseEntity
 import java.time.LocalDateTime
 
 class CoBoResponse<T>(
-    private val code: Int,
-    private val message: String,
-    private val time: LocalDateTime,
-    private val data:T?
+        private val coBoResponseDto: CoBoResponseDto<T>
 ) {
 
-    constructor(coBoResponseStatus: CoBoResponseStatus):
-            this(code = coBoResponseStatus.code,
-                message = coBoResponseStatus.message,
-                time = LocalDateTime.now(),
-                data = null)
+    constructor(coBoResponseStatus: CoBoResponseStatus): this(CoBoResponseDto(coBoResponseStatus))
+    constructor(data: T, coBoResponseStatus: CoBoResponseStatus): this(CoBoResponseDto(data, coBoResponseStatus))
 
-    constructor(data: T, coBoResponseStatus: CoBoResponseStatus):
-            this(code = coBoResponseStatus.code,
-                message = coBoResponseStatus.message,
-                time = LocalDateTime.now(),
-                data = data)
-
-    fun getResponseEntity(): ResponseEntity<CoBoResponse<T>> {
-        val httpStatusCode = HttpStatusCode.valueOf(code / 10)
-        return ResponseEntity(this, httpStatusCode)
+    fun getResponseEntity():ResponseEntity<CoBoResponseDto<T>>{
+        return ResponseEntity(coBoResponseDto, HttpStatusCode.valueOf(coBoResponseDto.code / 10))
     }
 }
