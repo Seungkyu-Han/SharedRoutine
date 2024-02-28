@@ -2,7 +2,6 @@ package CoBo.SharedRoutine.domain.auth.presentation
 
 import CoBo.SharedRoutine.domain.auth.Data.Dto.AuthGetLoginRes
 import CoBo.SharedRoutine.domain.auth.application.AuthService
-import CoBo.SharedRoutine.global.config.response.CoBoResponse
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
@@ -12,9 +11,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
-import jakarta.servlet.http.HttpServletRequest
-import jakarta.validation.Valid
-import jakarta.validation.constraints.NotNull
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
