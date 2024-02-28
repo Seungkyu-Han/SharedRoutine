@@ -23,7 +23,9 @@ class SecurityConfig(
             }
             .httpBasic { obj: HttpBasicConfigurer<HttpSecurity> -> obj.disable() }
             .authorizeHttpRequests { authorize ->
-                authorize.requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**").permitAll()
+                authorize.anyRequest().permitAll()
+//                authorize.requestMatchers("/swagger-ui/**", "/swagger-resources/**", "/v3/api-docs/**", "/api/auth/**").permitAll()
+//                        .anyRequest().permitAll()
             }
             .formLogin { obj: FormLoginConfigurer<HttpSecurity> -> obj.disable() }
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter::class.java)
