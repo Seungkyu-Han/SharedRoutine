@@ -63,6 +63,9 @@ dependencies {
 	//kakao gson
 	implementation("com.google.code.gson:gson:2.10.1")
 
+	//S3
+	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE")
+
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	providedRuntime("org.springframework.boot:spring-boot-starter-tomcat")
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
