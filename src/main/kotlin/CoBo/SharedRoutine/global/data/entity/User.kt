@@ -8,8 +8,8 @@ data class User(
     @Id
     var kakaoId: Int,
     var name: String?,
-    var refreshToken: String,
+    var refreshToken: String?,
     var followerCount: Int,
     var followingCount: Int,
-    var image: String
+    var image: String?
 )

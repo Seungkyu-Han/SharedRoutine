@@ -30,11 +30,11 @@ class JwtTokenProvider(
             .header["type"].toString() == "access"
     }
 
-    fun createAccessToken(userId: Int, secretKey: String): String{
+    fun createAccessToken(userId: Int): String{
         return createJwtToken(userId, secretKey, "access", accessTokenValidTime)
     }
 
-    fun createRefreshToken(userId: Int, secretKey: String): String{
+    fun createRefreshToken(userId: Int): String{
         return createJwtToken(userId, secretKey, "refresh", refreshTokenValidTime)
     }
 
