@@ -2,7 +2,6 @@ package CoBo.SharedRoutine.global.config.response
 
 import org.springframework.http.HttpStatusCode
 import org.springframework.http.ResponseEntity
-import java.time.LocalDateTime
 
 class CoBoResponse<T>(
         private val coBoResponseDto: CoBoResponseDto<T>
