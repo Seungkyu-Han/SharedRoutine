@@ -1,5 +1,6 @@
 package CoBo.SharedRoutine.domain.routine.presentation
 
+import CoBo.SharedRoutine.domain.routine.Data.Dto.RoutinePostParticipationReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.RoutinePostReq
 import CoBo.SharedRoutine.domain.routine.application.RoutineService
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
@@ -28,5 +29,19 @@ class RoutineController (
     )
     fun post(@RequestBody routinePostReq: RoutinePostReq, @Parameter(hidden = true) @RequestHeader("Authorization") authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         return routineService.post(routinePostReq, authorization)
+    }
+
+    @PostMapping("/participate")
+    @Operation(summary = "루틴 참여 API")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content())),
+        ApiResponse(responseCode = "404", description = "유효하지 않은 루틴", content = arrayOf(Content())),
+        ApiResponse(responseCode = "400", description = "이미 참여한 루틴입니다.", content = arrayOf(Content()))
+    )
+    fun postParticipation(@RequestBody routinePostParticipationReq: RoutinePostParticipationReq,
+                          @Parameter(hidden = true) @RequestHeader("Authorization") authorization: String)
+            : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return routineService.postParticipation(routinePostParticipationReq, authorization)
     }
 }
