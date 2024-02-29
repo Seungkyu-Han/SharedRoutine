@@ -2,7 +2,7 @@ package CoBo.SharedRoutine.domain.auth.Data.Dto
 
 import io.swagger.v3.oas.annotations.media.Schema
 
-data class AuthGetLoginRes(
+data class AuthLoginRes(
     @Schema(description = "재발급 토큰")
     val refreshToken: String,
 
