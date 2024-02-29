@@ -1,6 +1,6 @@
 package CoBo.SharedRoutine.domain.auth.presentation
 
-import CoBo.SharedRoutine.domain.auth.Data.Dto.AuthGetLoginRes
+import CoBo.SharedRoutine.domain.auth.Data.Dto.AuthLoginRes
 import CoBo.SharedRoutine.domain.auth.application.AuthService
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
 import io.swagger.v3.oas.annotations.Operation
@@ -25,9 +25,18 @@ class AuthController(private val authService: AuthService) {
         Parameter(name = "code", description = "카카오 로그인 code")
     )
     @ApiResponses(
-        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content(schema = Schema(implementation = AuthGetLoginRes::class))))
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content(schema = Schema(implementation = AuthLoginRes::class))))
     )
-    fun login(@RequestParam code: String):ResponseEntity<CoBoResponseDto<AuthGetLoginRes>>{
+    fun getLogin(@RequestParam code: String):ResponseEntity<CoBoResponseDto<AuthLoginRes>>{
         return authService.getLogin(code)
+    }
+
+    @PatchMapping("/login")
+    @Operation(summary = "AccessToken 갱신 API", description = "RefreshToken 사용해서 AccessToken 갱신")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content(schema = Schema(implementation = AuthLoginRes::class))))
+    )
+    fun patchLogin(@Parameter(hidden = true) @RequestHeader("Authorization") refreshToken: String):ResponseEntity<CoBoResponseDto<AuthLoginRes>>{
+        return authService.patchLogin(refreshToken)
     }
 }

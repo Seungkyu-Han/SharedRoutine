@@ -1,6 +1,6 @@
 package CoBo.SharedRoutine.domain.auth.application.Impl
 
-import CoBo.SharedRoutine.domain.auth.Data.Dto.AuthGetLoginRes
+import CoBo.SharedRoutine.domain.auth.Data.Dto.AuthLoginRes
 import CoBo.SharedRoutine.domain.auth.application.AuthService
 import CoBo.SharedRoutine.global.config.jwt.JwtTokenProvider
 import CoBo.SharedRoutine.global.config.response.CoBoResponse
@@ -29,9 +29,18 @@ class AuthServiceImpl(
     private val userRepository: UserRepository,
     private val jwtTokenProvider: JwtTokenProvider
 ): AuthService {
+    override fun patchLogin(refreshToken: String): ResponseEntity<CoBoResponseDto<AuthLoginRes>> {
+
+        val id = jwtTokenProvider.getUserId(refreshToken.split(" ")[1]) ?: 0
+
+        val accessToken = jwtTokenProvider.createAccessToken(id)
+
+        return CoBoResponse(
+            AuthLoginRes(accessToken = accessToken, refreshToken = refreshToken), CoBoResponseStatus.SUCCESS).getResponseEntity()
+    }
 
     private val reqUrl = "https://kauth.kakao.com/oauth/token"
-    override fun getLogin(code: String): ResponseEntity<CoBoResponseDto<AuthGetLoginRes>> {
+    override fun getLogin(code: String): ResponseEntity<CoBoResponseDto<AuthLoginRes>> {
         val kakaoAccessToken = getKakaoAccessToken(code)
 
         val element = getJsonElementByAccessToken(kakaoAccessToken)
@@ -46,7 +55,8 @@ class AuthServiceImpl(
 
         userRepository.save(user)
 
-        return CoBoResponse(AuthGetLoginRes(accessToken, refreshToken), CoBoResponseStatus.SUCCESS).getResponseEntity()
+        return CoBoResponse(AuthLoginRes(
+            accessToken = accessToken, refreshToken = refreshToken), CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
 
     private fun register(kakaoId: Int): User {
