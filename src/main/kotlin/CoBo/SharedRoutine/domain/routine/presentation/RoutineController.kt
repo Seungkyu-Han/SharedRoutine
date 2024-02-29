@@ -12,10 +12,12 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestHeader
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
@@ -46,5 +48,19 @@ class RoutineController (
                           @Parameter(hidden = true) @RequestHeader("Authorization") authorization: String)
     : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         return routineService.postParticipation(routinePostParticipationReq, authorization)
+    }
+
+    @PatchMapping
+    @Operation(summary = "루틴 설명 수정 API (방장만 가능)")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content())),
+        ApiResponse(responseCode = "404", description = "유효하지 않은 루틴", content = arrayOf(Content())),
+        ApiResponse(responseCode = "401", description = "수정 권한이 없습니다.", content = arrayOf(Content()))
+    )
+    fun patch(@RequestParam routineId: Int, @RequestParam description: String,
+              @Parameter(hidden = true) @RequestHeader("Authorization") authorization: String)
+    : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return routineService.patch(routineId, description, authorization)
     }
 }
