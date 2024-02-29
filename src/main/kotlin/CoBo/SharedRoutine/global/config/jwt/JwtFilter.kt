@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse
 import lombok.RequiredArgsConstructor
 import org.springframework.http.HttpHeaders
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Component
 import org.springframework.web.filter.OncePerRequestFilter
@@ -25,7 +26,8 @@ class JwtFilter(private val jwtTokenProvider: JwtTokenProvider): OncePerRequestF
             val token = authorization.split(" ")[1]
             if(jwtTokenProvider.isAccessToken(token)){
                 val userId = jwtTokenProvider.getUserId(token)
-                SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(userId, null, listOf())
+                SecurityContextHolder.getContext().authentication = UsernamePasswordAuthenticationToken(
+                    userId, null, listOf(SimpleGrantedAuthority("USER")))
             }
         }
 
