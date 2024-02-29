@@ -14,6 +14,7 @@ import CoBo.SharedRoutine.global.repository.UserRepository
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
+import java.time.LocalDate
 
 @Service
 class RoutineServiceImpl(
@@ -68,6 +69,16 @@ class RoutineServiceImpl(
 
         routine.get().description = description
         routineRepository.save(routine.get())
+
+        return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
+    }
+
+    override fun patchParticipation(routineId: Int, goalDate: LocalDate, authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        val token = authorization.split(" ")[1]
+        val userId = jwtTokenProvider.getUserId(token)
+
+        if (participationRepository.updateGoalDate(userId!!, routineId, goalDate) == 0)
+            return ResponseEntity(HttpStatus.NOT_FOUND)
 
         return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
     }

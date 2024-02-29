@@ -16,4 +16,10 @@ class ParticipationRepositoryImpl(
         val sql = "INSERT INTO participation (user_kakao_id, routine_id, start_date, goal_date, check_count, week) VALUES (?, ?, ?, ?, ?, ?)"
         jdbcTemplate.update(sql, userId, routineId, LocalDate.now(), goalDate, 0, week)
     }
+
+    @Transactional
+    override fun updateGoalDate(userId: Int, routineId: Int, goalDate: LocalDate): Int {
+        val sql = "UPDATE participation SET goal_date = ? WHERE user_kakao_id = ? AND routine_id = ?"
+        return jdbcTemplate.update(sql, goalDate, userId, routineId)
+    }
 }
