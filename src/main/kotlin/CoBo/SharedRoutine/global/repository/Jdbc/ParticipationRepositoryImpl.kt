@@ -22,4 +22,10 @@ class ParticipationRepositoryImpl(
         val count = jdbcTemplate.queryForObject(sql, arrayOf(userId, routineId), Int::class.java)
         return count > 0
     }
+
+    @Transactional
+    override fun updateGoalDate(userId: Int, routineId: Int, goalDate: LocalDate): Int {
+        val sql = "UPDATE participation SET goal_date = ? WHERE user_kakao_id = ? AND routine_id = ?"
+        return jdbcTemplate.update(sql, goalDate, userId, routineId)
+    }
 }

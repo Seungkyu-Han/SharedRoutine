@@ -5,9 +5,11 @@ import CoBo.SharedRoutine.domain.routine.Data.Dto.RoutinePostReq
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
 import CoBo.SharedRoutine.global.config.response.CoBoResponseStatus
 import org.springframework.http.ResponseEntity
+import java.time.LocalDate
 
 interface RoutineService {
     fun post(routinePostReq: RoutinePostReq, authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
     fun postParticipation(routinePostParticipationReq: RoutinePostParticipationReq, authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
     fun patch(routineId: Int, description: String, authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
+    fun patchParticipation(routineId: Int, goalDate: LocalDate, authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
 }

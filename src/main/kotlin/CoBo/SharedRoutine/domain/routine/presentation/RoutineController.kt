@@ -8,11 +8,13 @@ import CoBo.SharedRoutine.global.config.response.CoBoResponseStatus
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/routine")
@@ -31,7 +33,7 @@ class RoutineController (
         return routineService.post(routinePostReq, authorization)
     }
 
-    @PostMapping("/participate")
+    @PostMapping("/participation")
     @Operation(summary = "루틴 참여 API")
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
@@ -57,5 +59,19 @@ class RoutineController (
               @Parameter(hidden = true) @RequestHeader("Authorization") authorization: String)
             : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         return routineService.patch(routineId, description, authorization)
+    }
+
+    @PatchMapping("/participation")
+    @Operation(summary = "루틴 목표 날짜 수정 API")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content())),
+        ApiResponse(responseCode = "404", description = "참여하지 않은 루틴입니다.", content = arrayOf(Content()))
+    )
+    fun patchParticipation(@RequestParam routineId: Int,
+                           @Schema(example = "2024-08-15") @RequestParam goalDate: LocalDate,
+                           @Parameter(hidden = true) @RequestHeader("Authorization") authorization: String)
+            : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return routineService.patchParticipation(routineId, goalDate, authorization)
     }
 }
