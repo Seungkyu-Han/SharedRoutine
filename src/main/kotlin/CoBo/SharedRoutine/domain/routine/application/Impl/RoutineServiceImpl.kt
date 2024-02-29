@@ -56,4 +56,22 @@ class RoutineServiceImpl(
 
         return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
+
+    override fun patch(routineId: Int, description: String, authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        val token = authorization.split(" ")[1]
+        val userId = jwtTokenProvider.getUserId(token)
+
+        val routine = routineRepository.findById(routineId)
+
+        if (routine.isEmpty)
+            return ResponseEntity(HttpStatus.NOT_FOUND)
+
+        if (routine.get().admin.kakaoId != userId)
+            return ResponseEntity(HttpStatus.UNAUTHORIZED)
+
+        routine.get().description = description
+        routineRepository.save(routine.get())
+
+        return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
+    }
 }

@@ -9,4 +9,5 @@ import org.springframework.http.ResponseEntity
 interface RoutineService {
     fun post(routinePostReq: RoutinePostReq, authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
     fun postParticipation(routinePostParticipationReq: RoutinePostParticipationReq, authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
+    fun patch(routineId: Int, description: String, authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
 }
