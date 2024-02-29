@@ -50,7 +50,10 @@ class RoutineServiceImpl(
         if (routine.isEmpty)
             return ResponseEntity(HttpStatus.NOT_FOUND)
 
-        participationRepository.insertParticipation(userId!!, routineId, routinePostParticipationReq.goalDate, routinePostParticipationReq.weekBit.toInt(2))
+        if (participationRepository.checkIfRecordExists(userId!!, routineId))
+            return ResponseEntity(HttpStatus.BAD_REQUEST)
+
+        participationRepository.insertParticipation(userId, routineId, routinePostParticipationReq.goalDate, routinePostParticipationReq.weekBit.toInt(2))
 
         return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
     }

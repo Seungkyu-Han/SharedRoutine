@@ -22,4 +22,10 @@ class ParticipationRepositoryImpl(
         val sql = "UPDATE participation SET goal_date = ? WHERE user_kakao_id = ? AND routine_id = ?"
         return jdbcTemplate.update(sql, goalDate, userId, routineId)
     }
+
+    override fun checkIfRecordExists(userId: Int, routineId: Int): Boolean {
+        val sql = "SELECT COUNT(*) FROM participation WHERE user_kakao_id = ? AND routine_id = ?"
+        val count = jdbcTemplate.queryForObject(sql, arrayOf(userId, routineId), Int::class.java)
+        return count > 0
+    }
 }

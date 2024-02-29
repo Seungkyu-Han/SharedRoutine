@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
-import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -45,7 +44,8 @@ class RoutineController (
     @ApiResponses(
         ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
         ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content())),
-        ApiResponse(responseCode = "404", description = "유효하지 않은 루틴", content = arrayOf(Content()))
+        ApiResponse(responseCode = "404", description = "유효하지 않은 루틴", content = arrayOf(Content())),
+        ApiResponse(responseCode = "400", description = "이미 참여한 루틴입니다.", content = arrayOf(Content()))
     )
     fun postParticipation(@RequestBody routinePostParticipationReq: RoutinePostParticipationReq,
                           @Parameter(hidden = true) @RequestHeader("Authorization") authorization: String)
