@@ -19,11 +19,11 @@ class RoutineServiceImpl(
 ): RoutineService {
     override fun post(routinePostReq: RoutinePostReq, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         val userId = authentication.name.toInt()
-        val user = userRepository.findById(userId)
+        val user = userRepository.findById(userId).orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
 
         val routine = Routine(
             id = null,
-            admin = user.get(),
+            admin = user,
             title = routinePostReq.title,
             description = routinePostReq.description
         )
