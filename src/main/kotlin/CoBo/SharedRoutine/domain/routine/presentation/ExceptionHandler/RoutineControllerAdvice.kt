@@ -22,4 +22,9 @@ class RoutineControllerAdvice {
     fun duplicateKeyExceptionHandler(duplicateKeyException: DuplicateKeyException): ResponseEntity<CoBoResponseDto<String?>> {
         return CoBoResponse(duplicateKeyException.message, CoBoResponseStatus.CONFLICT).getResponseEntity()
     }
+
+    @ExceptionHandler(IllegalAccessException::class)
+    fun illegalAccessExceptionHandler(illegalAccessException: IllegalAccessException): ResponseEntity<CoBoResponseDto<String?>> {
+        return CoBoResponse(illegalAccessException.message, CoBoResponseStatus.UNAUTHORIZED).getResponseEntity()
+    }
 }
