@@ -44,4 +44,17 @@ class RoutineController (
             : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         return routineService.postParticipation(routinePostParticipationReq, authentication)
     }
+
+    @PatchMapping
+    @Operation(summary = "루틴 설명 수정 API (방장만 가능)")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content())),
+        ApiResponse(responseCode = "401", description = "수정 권한이 없습니다.", content = arrayOf(Content()))
+    )
+    fun patch(@RequestParam routineId: Int, @RequestParam description: String,
+              @Parameter(hidden = true) authentication: Authentication)
+            : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return routineService.patch(routineId, description, authentication)
+    }
 }
