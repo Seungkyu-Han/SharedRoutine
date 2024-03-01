@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
+import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
 
 @RestController
@@ -26,7 +27,7 @@ class RoutineController (
         ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
         ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content()))
     )
-    fun post(@RequestBody routinePostReq: RoutinePostReq, @Parameter(hidden = true) @RequestHeader("Authorization") authorization: String): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
-        return routineService.post(routinePostReq, authorization)
+    fun post(@RequestBody routinePostReq: RoutinePostReq, @Parameter(hidden = true) authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return routineService.post(routinePostReq, authentication)
     }
 }
