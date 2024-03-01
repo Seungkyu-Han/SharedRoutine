@@ -79,4 +79,17 @@ class RoutineServiceImpl(
 
         return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
+
+    override fun patchParticipation(routineId: Int, goalDate: LocalDate, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        val user = userRepository.findById(authentication.name.toInt())
+            .orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+
+        val routine = routineRepository.findById(routineId)
+            .orElseThrow{throw NoSuchElementException("일치하는 루틴이 없습니다.")}
+
+        if (participationRepository.updateGoalDate(goalDate, user, routine).toInt() == 0)
+            throw NoSuchElementException("일치하는 참여 정보가 없습니다.")
+
+        return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
+    }
 }
