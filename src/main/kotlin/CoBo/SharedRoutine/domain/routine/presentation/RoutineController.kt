@@ -8,12 +8,14 @@ import CoBo.SharedRoutine.global.config.response.CoBoResponseStatus
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.responses.ApiResponses
 import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 
 @RestController
 @RequestMapping("/api/routine")
@@ -56,5 +58,18 @@ class RoutineController (
               @Parameter(hidden = true) authentication: Authentication)
             : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         return routineService.patch(routineId, description, authentication)
+    }
+
+    @PatchMapping("/participate")
+    @Operation(summary = "루틴 목표 날짜 수정 API")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content())),
+    )
+    fun patchParticipation(@RequestParam routineId: Int,
+                           @Schema(example = "2024-08-15") @RequestParam goalDate: LocalDate,
+                           @Parameter(hidden = true) authentication: Authentication)
+            : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return routineService.patchParticipation(routineId, goalDate, authentication)
     }
 }
