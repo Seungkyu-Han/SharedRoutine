@@ -3,7 +3,7 @@ sudo docker rm shared-routine-dev
 sudo docker rmi prune
 
 #최신버전 pull 후에 빌드
-git pull origin main
+git pull origin dev
 ./gradlew clean build -x test
 
 # docker 실행
