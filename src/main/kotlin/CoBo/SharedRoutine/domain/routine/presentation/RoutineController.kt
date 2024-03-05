@@ -72,4 +72,17 @@ class RoutineController (
             : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         return routineService.patchParticipation(routineId, goalDate, authentication)
     }
+
+    @PostMapping("/check")
+    @Operation(summary = "루틴 완료 체크 API")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content())),
+        ApiResponse(responseCode = "409", description = "오늘 이미 완료한 루틴입니다.", content = arrayOf(Content()))
+    )
+    fun postCheck(@RequestParam routineId: Int,
+                  @Parameter(hidden = true) authentication: Authentication)
+            : ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return routineService.postCheck(routineId, authentication)
+    }
 }
