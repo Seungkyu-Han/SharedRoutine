@@ -6,8 +6,10 @@ import CoBo.SharedRoutine.domain.routine.application.RoutineService
 import CoBo.SharedRoutine.global.config.response.CoBoResponse
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
 import CoBo.SharedRoutine.global.config.response.CoBoResponseStatus
+import CoBo.SharedRoutine.global.data.entity.CheckedRoutine
 import CoBo.SharedRoutine.global.data.entity.Participation
 import CoBo.SharedRoutine.global.data.entity.Routine
+import CoBo.SharedRoutine.global.repository.CheckedRoutineRepository
 import CoBo.SharedRoutine.global.repository.ParticipationRepository
 import CoBo.SharedRoutine.global.repository.RoutineRepository
 import CoBo.SharedRoutine.global.repository.UserRepository
@@ -22,7 +24,8 @@ import kotlin.NoSuchElementException
 class RoutineServiceImpl(
     private val userRepository: UserRepository,
     private val routineRepository: RoutineRepository,
-    private val participationRepository: ParticipationRepository
+    private val participationRepository: ParticipationRepository,
+    private val checkedRoutineRepository: CheckedRoutineRepository
 ): RoutineService {
     override fun post(routinePostReq: RoutinePostReq, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         val userId = authentication.name.toInt()
@@ -91,6 +94,32 @@ class RoutineServiceImpl(
             .orElseThrow{throw NoSuchElementException("일치하는 참여 정보가 없습니다.")}
 
         participation.goalDate = goalDate
+        participationRepository.save(participation)
+
+        return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
+    }
+
+    override fun postCheck(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        val user = userRepository.findById(authentication.name.toInt())
+            .orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+
+        val routine = routineRepository.findById(routineId)
+            .orElseThrow{throw NoSuchElementException("일치하는 루틴이 없습니다.")}
+
+        val participation = participationRepository.findByUserAndRoutine(user, routine)
+            .orElseThrow{throw NoSuchElementException("일치하는 참여 정보가 없습니다.")}
+
+        if (checkedRoutineRepository.existsByDateAndParticipation(LocalDate.now(), participation))
+            throw DuplicateKeyException("오늘 이미 완료한 루틴입니다.")
+
+        checkedRoutineRepository.save(CheckedRoutine(
+            id = null,
+            participation = participation,
+            date = LocalDate.now()
+        ))
+
+        participation.checkCount += 1
+        participation.lastCheckDate = LocalDate.now()
         participationRepository.save(participation)
 
         return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
