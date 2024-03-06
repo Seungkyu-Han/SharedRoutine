@@ -13,4 +13,5 @@ interface ParticipationRepository: JpaRepository<Participation, Int>{
     fun existsByUserAndRoutine(user: User, routine: Routine): Boolean
     fun findByUserAndRoutine(user: User, routine: Routine): Optional<Participation>
     fun findAllByUser(user: User): List<Participation>
+    fun findAllByRoutine(routine: Routine): List<Participation>
 }

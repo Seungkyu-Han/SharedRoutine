@@ -3,6 +3,7 @@ package CoBo.SharedRoutine.domain.routine.application
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostParticipationReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetParticipationElementRes
+import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRes
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
 import CoBo.SharedRoutine.global.config.response.CoBoResponseStatus
 import org.springframework.http.ResponseEntity
@@ -16,4 +17,5 @@ interface RoutineService {
     fun patchParticipation(routineId: Int, goalDate: LocalDate, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
     fun postCheck(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
     fun getParticipation(authentication: Authentication): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetParticipationElementRes>>>
+    fun get(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<RoutineGetRes>>
 }
