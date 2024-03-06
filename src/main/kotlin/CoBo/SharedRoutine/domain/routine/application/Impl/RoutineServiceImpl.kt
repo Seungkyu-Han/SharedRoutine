@@ -39,7 +39,8 @@ class RoutineServiceImpl(
             id = null,
             admin = user,
             title = routinePostReq.title,
-            description = routinePostReq.description
+            description = routinePostReq.description,
+            memberCount = 0
         )
 
         routineRepository.save(routine)
@@ -67,6 +68,9 @@ class RoutineServiceImpl(
             checkCount = 0,
             week = routinePostParticipationReq.weekBit.toInt(2)
         ))
+
+        routine.memberCount += 1
+        routineRepository.save(routine)
 
         return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
     }

@@ -14,5 +14,6 @@ data class Routine(
     @ManyToOne
     var admin: User,
     var title: String,
-    var description: String
+    var description: String,
+    var memberCount: Int
 )
