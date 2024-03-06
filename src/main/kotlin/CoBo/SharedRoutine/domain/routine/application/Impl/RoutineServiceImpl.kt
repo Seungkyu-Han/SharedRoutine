@@ -4,6 +4,7 @@ import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostParticipationRe
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetMemberElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetParticipationElementRes
+import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRankElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRes
 import CoBo.SharedRoutine.domain.routine.application.RoutineService
 import CoBo.SharedRoutine.global.config.response.CoBoResponse
@@ -194,5 +195,19 @@ class RoutineServiceImpl(
         }
 
         return (participation.checkCount.toDouble() / count * 100).roundToInt()
+    }
+
+    override fun getRank(): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankElementRes>>> {
+        val routineGetRankElementResList = ArrayList<RoutineGetRankElementRes>()
+
+        for (routine in routineRepository.findTopTen())
+            routineGetRankElementResList.add(
+                RoutineGetRankElementRes(
+                routineId = routine.id,
+                title = routine.title,
+                memberCount = routine.memberCount
+            ))
+
+        return CoBoResponse(routineGetRankElementResList, CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
 }

@@ -3,6 +3,7 @@ package CoBo.SharedRoutine.domain.routine.presentation
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostParticipationReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetParticipationElementRes
+import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRankElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRes
 import CoBo.SharedRoutine.domain.routine.application.RoutineService
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
@@ -108,5 +109,15 @@ class RoutineController (
             @Parameter(hidden = true) authentication: Authentication)
             : ResponseEntity<CoBoResponseDto<RoutineGetRes>> {
         return routineService.get(routineId, authentication)
+    }
+
+    @GetMapping("/rank")
+    @Operation(summary = "루틴 순위 조회 API")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content()))
+    )
+    fun getRank(): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankElementRes>>> {
+        return routineService.getRank()
     }
 }
