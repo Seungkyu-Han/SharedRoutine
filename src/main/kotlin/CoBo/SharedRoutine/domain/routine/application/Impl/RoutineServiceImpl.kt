@@ -141,6 +141,7 @@ class RoutineServiceImpl(
 
             routineGetParticipationElementResList.add(
                 RoutineGetParticipationElementRes(
+                    routineId = participation.routine.id,
                     title = participation.routine.title,
                     achievementRate = calculateAchievementRate(participation),
                     checked = checked
