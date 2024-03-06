@@ -2,7 +2,9 @@ package CoBo.SharedRoutine.domain.routine.application.Impl
 
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostParticipationReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostReq
+import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetMemberElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetParticipationElementRes
+import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRes
 import CoBo.SharedRoutine.domain.routine.application.RoutineService
 import CoBo.SharedRoutine.global.config.response.CoBoResponse
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
@@ -146,6 +148,32 @@ class RoutineServiceImpl(
         }
 
         return CoBoResponse(routineGetParticipationElementResList, CoBoResponseStatus.SUCCESS).getResponseEntity()
+    }
+
+    override fun get(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<RoutineGetRes>> {
+        val user = userRepository.findById(authentication.name.toInt())
+            .orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+
+        val routine = routineRepository.findById(routineId)
+            .orElseThrow{throw NoSuchElementException("일치하는 루틴이 없습니다.")}
+
+        val memberList = ArrayList<RoutineGetMemberElementRes>()
+
+        for (participation in participationRepository.findAllByRoutine(routine))
+            memberList.add(
+                RoutineGetMemberElementRes(
+                    id = participation.user.kakaoId,
+                    name = participation.user.name,
+                    image = participation.user.image,
+                    achievementRate = calculateAchievementRate(participation)
+                ))
+
+        return CoBoResponse(RoutineGetRes(
+            title = routine.title,
+            description = routine.description,
+            joined = participationRepository.existsByUserAndRoutine(user, routine),
+            memberList = memberList
+        ), CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
 
     private fun calculateAchievementRate(participation: Participation): Int {
