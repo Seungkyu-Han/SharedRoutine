@@ -1,4 +1,4 @@
-package CoBo.SharedRoutine.domain.routine.Data.Dto
+package CoBo.SharedRoutine.domain.routine.Data.Dto.Req
 
 import io.swagger.v3.oas.annotations.media.Schema
 
