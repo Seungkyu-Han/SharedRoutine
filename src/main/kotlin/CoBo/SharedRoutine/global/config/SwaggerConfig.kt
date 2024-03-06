@@ -19,7 +19,7 @@ class SwaggerConfig {
             .`in`(SecurityScheme.In.HEADER).name("Authorization")
         val securityRequirement = SecurityRequirement().addList("Bearer")
         return OpenAPI()
-            .info(Info().title("KMU-Chat bot"))
+            .info(Info().title("Shared Routine"))
             .components(Components().addSecuritySchemes("Bearer", securityScheme))
             .security(listOf(securityRequirement))
             .addServersItem(Server().url("/"))
