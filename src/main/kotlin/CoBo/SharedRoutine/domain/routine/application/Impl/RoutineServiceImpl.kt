@@ -210,4 +210,26 @@ class RoutineServiceImpl(
 
         return CoBoResponse(routineGetRankElementResList, CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
+
+    override fun patchAdmin(routineId: Int, newAdminId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        val user = userRepository.findById(authentication.name.toInt())
+            .orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+
+        val newAdmin = userRepository.findById(newAdminId)
+            .orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+
+        val routine = routineRepository.findById(routineId)
+            .orElseThrow{throw NoSuchElementException("일치하는 루틴이 없습니다.")}
+
+        if (routine.admin != user)
+            throw IllegalAccessException("수정 권한이 없습니다.")
+
+        if (!participationRepository.existsByUserAndRoutine(newAdmin, routine))
+            throw NoSuchElementException("참여 정보가 없는 사용자입니다.")
+
+        routine.admin = newAdmin
+        routineRepository.save(routine)
+
+        return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
+    }
 }

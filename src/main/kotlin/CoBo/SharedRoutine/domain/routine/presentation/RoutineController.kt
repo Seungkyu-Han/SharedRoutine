@@ -120,4 +120,15 @@ class RoutineController (
     fun getRank(): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankElementRes>>> {
         return routineService.getRank()
     }
+
+    @PatchMapping("/admin")
+    @Operation(summary = "루틴 방장 변경 API (방장만 가능)")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content())),
+        ApiResponse(responseCode = "401", description = "수정 권한이 없습니다.", content = arrayOf(Content()))
+    )
+    fun patchAdmin(routineId: Int, newAdminId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return routineService.patchAdmin(routineId, newAdminId, authentication)
+    }
 }
