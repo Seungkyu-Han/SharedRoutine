@@ -20,4 +20,5 @@ interface RoutineService {
     fun getParticipation(authentication: Authentication): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetParticipationElementRes>>>
     fun get(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<RoutineGetRes>>
     fun getRank(): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankElementRes>>>
+    fun patchAdmin(routineId: Int, newAdminId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
 }
