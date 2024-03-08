@@ -20,19 +20,27 @@ class UserServiceImpl(
     private val userRepository: UserRepository,
     private val amazonS3Client: AmazonS3Client,
     @Value("\${cloud.aws.s3.bucket}")
-    private val bucket: String): UserService {
+    private val bucket: String,
+    @Value("\${cloud.aws.s3.profileImagePath}")
+    private val profileImagePath: String,
+    @Value("\${cloud.aws.s3.s3BucketPrefix}")
+    private val s3BucketPrefix: String): UserService {
 
-    private val profileImagePath = "profileImage/"
     override fun postImage(
         multipartFile: MultipartFile,
         authentication: Authentication
     ): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
-        uploadImageToS3(multipartFile)
+        val userId = authentication.name.toInt()
+        val user = userRepository.findById(userId).orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+
+        user.image = s3BucketPrefix + uploadImageToS3(multipartFile)
+
+        userRepository.save(user)
 
         return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
 
-    private fun uploadImageToS3(multipartFile: MultipartFile){
+    private fun uploadImageToS3(multipartFile: MultipartFile): String{
         val uuidName = profileImagePath + UUID.randomUUID() + "." + getExtension(multipartFile.originalFilename)
 
         val metadata = ObjectMetadata()
@@ -41,7 +49,7 @@ class UserServiceImpl(
         metadata.contentLength = multipartFile.size
 
         amazonS3Client.putObject(bucket, uuidName, multipartFile.inputStream, metadata)
-
+        return uuidName
     }
 
     private fun getExtension(originalFileName: String?):String?{
