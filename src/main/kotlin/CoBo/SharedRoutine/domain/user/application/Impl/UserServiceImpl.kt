@@ -13,7 +13,8 @@ import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
 import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
-import java.util.UUID
+import java.util.*
+import java.util.concurrent.CompletableFuture
 
 @Service
 class UserServiceImpl(
@@ -31,13 +32,27 @@ class UserServiceImpl(
         authentication: Authentication
     ): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         val userId = authentication.name.toInt()
-        val user = userRepository.findById(userId).orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
 
-        user.image = s3BucketPrefix + uploadImageToS3(multipartFile)
+        val userCompletableFuture = CompletableFuture.supplyAsync {
+            userRepository.findById(userId).orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+        }
 
-        userRepository.save(user)
+        val fileCompletableFuture = CompletableFuture.supplyAsync {
+            s3BucketPrefix + uploadImageToS3(multipartFile)
+        }
 
-        return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
+        return CompletableFuture.allOf(userCompletableFuture, fileCompletableFuture)
+            .thenApplyAsync {
+
+                val user = userCompletableFuture.get()
+                val file = fileCompletableFuture.get()
+
+                user.image = file
+
+                userRepository.save(user)
+
+                CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
+            }.get()
     }
 
     private fun uploadImageToS3(multipartFile: MultipartFile): String{
