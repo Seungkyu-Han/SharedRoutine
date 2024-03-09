@@ -3,7 +3,7 @@ package CoBo.SharedRoutine.domain.routine.presentation
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostParticipationReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetParticipationElementRes
-import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRankElementRes
+import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRankAndSearchElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRes
 import CoBo.SharedRoutine.domain.routine.application.RoutineService
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
@@ -117,7 +117,7 @@ class RoutineController (
         ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
         ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content()))
     )
-    fun getRank(): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankElementRes>>> {
+    fun getRank(): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankAndSearchElementRes>>> {
         return routineService.getRank()
     }
 
@@ -128,7 +128,18 @@ class RoutineController (
         ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content())),
         ApiResponse(responseCode = "401", description = "수정 권한이 없습니다.", content = arrayOf(Content()))
     )
-    fun patchAdmin(routineId: Int, newAdminId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+    fun patchAdmin(@RequestParam routineId: Int, @RequestParam newAdminId: Int,
+                   @Parameter(hidden = true) authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         return routineService.patchAdmin(routineId, newAdminId, authentication)
+    }
+
+    @GetMapping("/search")
+    @Operation(summary = "루틴 키워드 검색 API")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content()))
+    )
+    fun getSearch(@RequestParam keyword: String): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankAndSearchElementRes>>> {
+        return routineService.getSearch(keyword)
     }
 }
