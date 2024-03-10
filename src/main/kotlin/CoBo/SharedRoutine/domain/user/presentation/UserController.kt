@@ -12,8 +12,10 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RequestPart
 import org.springframework.web.bind.annotation.RestController
 import org.springframework.web.multipart.MultipartFile
@@ -34,5 +36,13 @@ class UserController(
         return userService.postImage(multipartFile, authentication)
     }
 
-
+    @PatchMapping
+    @Operation(summary = "유저 닉네임 변경 API")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "409", description = "닉네임이 중복됩니다.", content = arrayOf(Content()))
+    )
+    fun patch(@RequestParam newName: String, @Parameter(hidden = true) authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return userService.patch(newName, authentication)
+    }
 }

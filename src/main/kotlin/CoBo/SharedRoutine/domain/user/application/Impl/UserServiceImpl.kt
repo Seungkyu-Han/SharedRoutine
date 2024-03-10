@@ -15,6 +15,7 @@ import org.springframework.util.StringUtils
 import org.springframework.web.multipart.MultipartFile
 import java.util.*
 import java.util.concurrent.CompletableFuture
+import kotlin.NoSuchElementException
 
 @Service
 class UserServiceImpl(
@@ -69,5 +70,15 @@ class UserServiceImpl(
 
     private fun getExtension(originalFileName: String?):String?{
         return StringUtils.getFilenameExtension(originalFileName)
+    }
+
+    override fun patch(newName: String, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        val user = userRepository.findById(authentication.name.toInt())
+            .orElseThrow {throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+
+        user.name = newName
+        userRepository.save(user)
+
+        return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
 }

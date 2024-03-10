@@ -1,5 +1,6 @@
 package CoBo.SharedRoutine.global.data.entity
 
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 
@@ -7,6 +8,7 @@ import jakarta.persistence.Id
 data class User(
     @Id
     var kakaoId: Int,
+    @Column(unique = true)
     var name: String?,
     var refreshToken: String?,
     var followerCount: Int,

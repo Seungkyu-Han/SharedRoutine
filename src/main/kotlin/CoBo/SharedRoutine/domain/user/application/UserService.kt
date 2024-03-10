@@ -8,4 +8,5 @@ import org.springframework.web.multipart.MultipartFile
 
 interface UserService {
     fun postImage(multipartFile: MultipartFile, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
+    fun patch(newName: String, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
 }
