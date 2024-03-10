@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface RoutineRepository: JpaRepository<Routine, Int>, RoutineRepositoryCustom {
+    fun findAllByTitleContains(keyword: String): List<Routine>
 }

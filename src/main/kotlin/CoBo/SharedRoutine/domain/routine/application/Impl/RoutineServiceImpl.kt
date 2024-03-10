@@ -4,7 +4,7 @@ import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostParticipationRe
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetMemberElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetParticipationElementRes
-import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRankElementRes
+import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRankAndSearchElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRes
 import CoBo.SharedRoutine.domain.routine.application.RoutineService
 import CoBo.SharedRoutine.global.config.response.CoBoResponse
@@ -198,12 +198,12 @@ class RoutineServiceImpl(
         return (participation.checkCount.toDouble() / count * 100).roundToInt()
     }
 
-    override fun getRank(): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankElementRes>>> {
-        val routineGetRankElementResList = ArrayList<RoutineGetRankElementRes>()
+    override fun getRank(): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankAndSearchElementRes>>> {
+        val routineGetRankElementResList = ArrayList<RoutineGetRankAndSearchElementRes>()
 
         for (routine in routineRepository.findTopTen())
             routineGetRankElementResList.add(
-                RoutineGetRankElementRes(
+                RoutineGetRankAndSearchElementRes(
                 routineId = routine.id,
                 title = routine.title,
                 memberCount = routine.memberCount
@@ -252,5 +252,19 @@ class RoutineServiceImpl(
 
                 CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
             }.get()
+    }
+
+    override fun getSearch(keyword: String): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankAndSearchElementRes>>> {
+        val routineGetSearchElementResList =  ArrayList<RoutineGetRankAndSearchElementRes>()
+
+        for (routine in routineRepository.findAllByTitleContains(keyword))
+            routineGetSearchElementResList.add(
+                RoutineGetRankAndSearchElementRes(
+                    routineId = routine.id,
+                    title = routine.title,
+                    memberCount = routine.memberCount
+                ))
+
+        return CoBoResponse(routineGetSearchElementResList, CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
 }
