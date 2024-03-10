@@ -60,7 +60,7 @@ class AuthServiceImpl(
     }
 
     private fun register(kakaoId: Int): User {
-        val user = User(kakaoId = kakaoId, name = null, refreshToken = null, followerCount = 0, followingCount = 0, image = null)
+        val user = User(kakaoId = kakaoId, name = "게스트"+(-kakaoId), refreshToken = null, followerCount = 0, followingCount = 0, image = null)
         userRepository.save(user)
         return user
     }
