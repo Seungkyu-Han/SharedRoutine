@@ -19,6 +19,7 @@ import java.io.InputStreamReader
 import java.io.OutputStreamWriter
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.UUID
 
 @Service
 class AuthServiceImpl(
@@ -60,7 +61,7 @@ class AuthServiceImpl(
     }
 
     private fun register(kakaoId: Int): User {
-        val user = User(kakaoId = kakaoId, name = "게스트"+(-kakaoId), refreshToken = null, followerCount = 0, followingCount = 0, image = null)
+        val user = User(kakaoId = kakaoId, name = UUID.randomUUID().toString(), refreshToken = null, followerCount = 0, followingCount = 0, image = null)
         userRepository.save(user)
         return user
     }
