@@ -1,6 +1,7 @@
 package CoBo.SharedRoutine.domain.user.presentation
 
 import CoBo.SharedRoutine.domain.user.application.UserService
+import CoBo.SharedRoutine.domain.user.data.dto.Res.UserGetRes
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
 import CoBo.SharedRoutine.global.config.response.CoBoResponseStatus
 import io.swagger.v3.oas.annotations.Operation
@@ -54,5 +55,15 @@ class UserController(
     )
     fun getExist(@RequestParam newName: String): ResponseEntity<CoBoResponseDto<Boolean>> {
         return userService.getExist(newName)
+    }
+
+    @GetMapping
+    @Operation(summary = "유저 본인 프로필 조회 API")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content()))
+    )
+    fun get(@Parameter(hidden = true) authentication: Authentication): ResponseEntity<CoBoResponseDto<UserGetRes>> {
+        return userService.get(authentication)
     }
 }

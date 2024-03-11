@@ -9,7 +9,7 @@ data class User(
     @Id
     var kakaoId: Int,
     @Column(unique = true)
-    var name: String?,
+    var name: String,
     var refreshToken: String?,
     var followerCount: Int,
     var followingCount: Int,
