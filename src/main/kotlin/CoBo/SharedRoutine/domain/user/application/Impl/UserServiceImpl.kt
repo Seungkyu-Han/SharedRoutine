@@ -1,6 +1,7 @@
 package CoBo.SharedRoutine.domain.user.application.Impl
 
 import CoBo.SharedRoutine.domain.user.application.UserService
+import CoBo.SharedRoutine.domain.user.data.dto.Res.UserGetRes
 import CoBo.SharedRoutine.global.config.response.CoBoResponse
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
 import CoBo.SharedRoutine.global.config.response.CoBoResponseStatus
@@ -84,5 +85,12 @@ class UserServiceImpl(
 
     override fun getExist(newName: String): ResponseEntity<CoBoResponseDto<Boolean>> {
         return CoBoResponse(userRepository.existsByName(newName), CoBoResponseStatus.SUCCESS).getResponseEntity()
+    }
+
+    override fun get(authentication: Authentication): ResponseEntity<CoBoResponseDto<UserGetRes>> {
+        val user = userRepository.findById(authentication.name.toInt())
+            .orElseThrow {throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+
+        return CoBoResponse(UserGetRes(user.name, user.image), CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
 }
