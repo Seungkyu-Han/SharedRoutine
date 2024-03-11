@@ -22,4 +22,5 @@ interface RoutineService {
     fun getRank(): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankAndSearchElementRes>>>
     fun patchAdmin(routineId: Int, newAdminId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
     fun getSearch(keyword: String): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankAndSearchElementRes>>>
+    fun deleteParticipation(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
 }

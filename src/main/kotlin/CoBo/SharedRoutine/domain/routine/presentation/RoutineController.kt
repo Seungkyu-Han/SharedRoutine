@@ -142,4 +142,14 @@ class RoutineController (
     fun getSearch(@RequestParam keyword: String): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankAndSearchElementRes>>> {
         return routineService.getSearch(keyword)
     }
+
+    @DeleteMapping
+    @Operation(summary = "루틴 탈퇴 API (방장이 탈퇴할 시 랜덤 위임, 루틴 인원 0명일 시 루틴 삭제)")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content()))
+    )
+    fun deleteParticipation(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return routineService.deleteParticipation(routineId, authentication)
+    }
 }
