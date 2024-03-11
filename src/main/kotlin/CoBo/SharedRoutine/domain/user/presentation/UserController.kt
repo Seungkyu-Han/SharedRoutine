@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.security.core.Authentication
+import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
@@ -44,5 +45,14 @@ class UserController(
     )
     fun patch(@RequestParam newName: String, @Parameter(hidden = true) authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         return userService.patch(newName, authentication)
+    }
+
+    @GetMapping("/exist")
+    @Operation(summary = "유저 닉네임 중복 확인 API (중복 시 true)")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content()))
+    )
+    fun getExist(@RequestParam newName: String): ResponseEntity<CoBoResponseDto<Boolean>> {
+        return userService.getExist(newName)
     }
 }
