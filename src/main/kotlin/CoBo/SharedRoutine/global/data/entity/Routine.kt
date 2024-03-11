@@ -5,8 +5,12 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.ManyToOne
+import org.hibernate.annotations.SQLDelete
+import org.hibernate.annotations.Where
 
 @Entity
+@SQLDelete(sql = "UPDATE routine SET deleted = true WHERE id = ?")
+@Where(clause = "deleted = false")
 data class Routine(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,5 +19,6 @@ data class Routine(
     var admin: User,
     var title: String,
     var description: String,
-    var memberCount: Int
+    var memberCount: Int,
+    var deleted: Boolean = false
 )
