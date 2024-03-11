@@ -267,4 +267,33 @@ class RoutineServiceImpl(
 
         return CoBoResponse(routineGetSearchElementResList, CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
+
+    override fun deleteParticipation(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        val user = userRepository.findById(authentication.name.toInt())
+            .orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+
+        val routine = routineRepository.findById(routineId)
+            .orElseThrow{throw NoSuchElementException("일치하는 루틴이 없습니다.")}
+
+        val participation = participationRepository.findByUserAndRoutine(user, routine)
+            .orElseThrow{throw NoSuchElementException("일치하는 참여 정보가 없습니다.")}
+
+        participationRepository.delete(participation)
+
+        routine.memberCount -= 1
+        routineRepository.save(routine)
+
+        if (routine.memberCount == 0) // 루틴 참여 멤버가 없을 시 루틴 삭제
+            routineRepository.delete(routine)
+        else if (routine.admin == user) // 방장이 퇴장할 시 랜덤으로 방장 위임
+            randomAdmin(routine)
+
+        return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
+    }
+
+    private fun randomAdmin(routine: Routine) {
+        val newAdmin = participationRepository.findAllByRoutine(routine).random().user
+        routine.admin = newAdmin
+        routineRepository.save(routine)
+    }
 }
