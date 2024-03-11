@@ -83,8 +83,6 @@ class UserServiceImpl(
     }
 
     override fun getExist(newName: String): ResponseEntity<CoBoResponseDto<Boolean>> {
-        var exist = false
-        if (userRepository.existsByName(newName)) exist = true
-        return CoBoResponse(exist, CoBoResponseStatus.SUCCESS).getResponseEntity()
+        return CoBoResponse(userRepository.existsByName(newName), CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
 }
