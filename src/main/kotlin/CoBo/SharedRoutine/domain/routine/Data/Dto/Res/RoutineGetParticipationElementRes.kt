@@ -4,5 +4,6 @@ data class RoutineGetParticipationElementRes(
     val routineId: Int?,
     val title: String,
     val achievementRate: Int,
-    val checked: Boolean
+    val checked: Boolean,
+    val weekBit: Int
 )
