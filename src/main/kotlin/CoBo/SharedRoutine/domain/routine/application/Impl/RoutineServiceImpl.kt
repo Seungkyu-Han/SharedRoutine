@@ -142,15 +142,13 @@ class RoutineServiceImpl(
         val routineGetParticipationElementResList = ArrayList<RoutineGetParticipationElementRes>()
 
         for (participation in participationRepository.findAllByUser(user)) {
-            var checked = false
-            if (participation.lastCheckDate == LocalDate.now()) checked = true
-
             routineGetParticipationElementResList.add(
                 RoutineGetParticipationElementRes(
                     routineId = participation.routine.id,
                     title = participation.routine.title,
                     achievementRate = calculateAchievementRate(participation),
-                    checked = checked
+                    checked = participation.lastCheckDate == LocalDate.now(),
+                    weekBit = participation.week
                 ))
         }
 
