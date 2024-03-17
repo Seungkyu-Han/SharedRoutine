@@ -159,7 +159,7 @@ class RoutineServiceImpl(
                     title = participation.routine.title,
                     achievementRate = calculateAchievementRate(participation),
                     checked = participation.lastCheckDate == LocalDate.now(),
-                    weekBit = participation.week
+                    weekBit = participation.week.toString(2).padStart(7, '0')
                 ))
         }
 
