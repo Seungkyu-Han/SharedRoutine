@@ -42,10 +42,21 @@ class RoutineServiceImpl(
             admin = user,
             title = routinePostReq.title,
             description = routinePostReq.description,
-            memberCount = 0
+            memberCount = 1
         )
 
         routineRepository.save(routine)
+
+        participationRepository.save(Participation(
+            id = null,
+            user = user,
+            routine = routine,
+            startDate = LocalDate.now(),
+            goalDate = routinePostReq.goalDate,
+            lastCheckDate = null,
+            checkCount = 0,
+            week = routinePostReq.weekBit.toInt(2)
+        ))
 
         return CoBoResponse<CoBoResponseStatus>(CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
