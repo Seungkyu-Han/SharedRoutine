@@ -5,6 +5,7 @@ import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetParticipationElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRankAndSearchElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRes
+import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetWeekElementRes
 import CoBo.SharedRoutine.domain.routine.application.RoutineService
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
 import CoBo.SharedRoutine.global.config.response.CoBoResponseStatus
@@ -151,5 +152,15 @@ class RoutineController (
     )
     fun deleteParticipation(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         return routineService.deleteParticipation(routineId, authentication)
+    }
+
+    @GetMapping("/week")
+    @Operation(summary = "일주일 간 루틴 달성 상태 조회 (해당 요일 달성 시 1, 미달성 시 0)")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content()))
+    )
+    fun getWeek(@Parameter(hidden = true) authentication: Authentication): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetWeekElementRes>>> {
+        return routineService.getWeek(authentication)
     }
 }

@@ -5,6 +5,7 @@ import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetParticipationElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRankAndSearchElementRes
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRes
+import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetWeekElementRes
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
 import CoBo.SharedRoutine.global.config.response.CoBoResponseStatus
 import org.springframework.http.ResponseEntity
@@ -23,4 +24,5 @@ interface RoutineService {
     fun patchAdmin(routineId: Int, newAdminId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
     fun getSearch(keyword: String): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetRankAndSearchElementRes>>>
     fun deleteParticipation(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>>
+    fun getWeek(authentication: Authentication): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetWeekElementRes>>>
 }
