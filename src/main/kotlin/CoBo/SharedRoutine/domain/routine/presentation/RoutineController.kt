@@ -150,7 +150,7 @@ class RoutineController (
         ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
         ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content()))
     )
-    fun deleteParticipation(routineId: Int, authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+    fun deleteParticipation(@RequestParam routineId: Int, @Parameter(hidden = true) authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
         return routineService.deleteParticipation(routineId, authentication)
     }
 
@@ -162,5 +162,15 @@ class RoutineController (
     )
     fun getWeek(@Parameter(hidden = true) authentication: Authentication): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetWeekElementRes>>> {
         return routineService.getWeek(authentication)
+    }
+
+    @DeleteMapping("/check")
+    @Operation(summary = "루틴 달성 체크 취소 API")
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "성공", content = arrayOf(Content())),
+        ApiResponse(responseCode = "403", description = "인증 실패", content = arrayOf(Content()))
+    )
+    fun deleteCheck(@RequestParam routineId: Int, @Parameter(hidden = true) authentication: Authentication): ResponseEntity<CoBoResponseDto<CoBoResponseStatus>> {
+        return routineService.deleteCheck(routineId, authentication)
     }
 }
