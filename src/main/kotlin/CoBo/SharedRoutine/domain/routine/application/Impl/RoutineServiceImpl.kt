@@ -2,10 +2,7 @@ package CoBo.SharedRoutine.domain.routine.application.Impl
 
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostParticipationReq
 import CoBo.SharedRoutine.domain.routine.Data.Dto.Req.RoutinePostReq
-import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetMemberElementRes
-import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetParticipationElementRes
-import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRankAndSearchElementRes
-import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.RoutineGetRes
+import CoBo.SharedRoutine.domain.routine.Data.Dto.Res.*
 import CoBo.SharedRoutine.domain.routine.application.RoutineService
 import CoBo.SharedRoutine.global.config.response.CoBoResponse
 import CoBo.SharedRoutine.global.config.response.CoBoResponseDto
@@ -304,5 +301,29 @@ class RoutineServiceImpl(
         val newAdmin = participationRepository.findAllByRoutine(routine).random().user
         routine.admin = newAdmin
         routineRepository.save(routine)
+    }
+
+    override fun getWeek(authentication: Authentication): ResponseEntity<CoBoResponseDto<ArrayList<RoutineGetWeekElementRes>>> {
+        val user = userRepository.findById(authentication.name.toInt())
+            .orElseThrow{throw NoSuchElementException("일치하는 사용자가 없습니다.")}
+
+        val routineGetWeekElementResList = ArrayList<RoutineGetWeekElementRes>()
+
+        for (participation in participationRepository.findAllByUser(user)) {
+            var checkedBit = 0
+            for ((index, value) in participation.week.toString(2).padStart(7, '0').withIndex()) {
+                if (value == '1' && checkedRoutineRepository.existsByDateAndParticipation(LocalDate.now().plusDays((index-LocalDate.now().dayOfWeek.value).toLong()), participation))
+                    checkedBit = checkedBit or (1 shl (6 - index))
+            }
+
+            routineGetWeekElementResList.add(
+                RoutineGetWeekElementRes(
+                routineId = participation.routine.id,
+                checkedBit = checkedBit.toString(2).padStart(7, '0'),
+                weekBit = participation.week.toString(2).padStart(7, '0')
+            ))
+        }
+
+        return CoBoResponse(routineGetWeekElementResList, CoBoResponseStatus.SUCCESS).getResponseEntity()
     }
 }
