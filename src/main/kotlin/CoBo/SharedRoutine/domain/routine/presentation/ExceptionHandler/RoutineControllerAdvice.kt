@@ -27,4 +27,9 @@ class RoutineControllerAdvice {
     fun illegalAccessExceptionHandler(illegalAccessException: IllegalAccessException): ResponseEntity<CoBoResponseDto<String?>> {
         return CoBoResponse(illegalAccessException.message, CoBoResponseStatus.UNAUTHORIZED).getResponseEntity()
     }
+
+    @ExceptionHandler(IllegalArgumentException::class)
+    fun illegalArgumentExceptionHandler(illegalArgumentException: java.lang.IllegalArgumentException): ResponseEntity<CoBoResponseDto<String?>> {
+        return CoBoResponse(illegalArgumentException.message, CoBoResponseStatus.NOT_FOUND_ELEMENT).getResponseEntity()
+    }
 }
