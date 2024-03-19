@@ -130,6 +130,9 @@ class RoutineServiceImpl(
         if (checkedRoutineRepository.existsByDateAndParticipation(LocalDate.now(), participation))
             throw DuplicateKeyException("오늘 이미 완료한 루틴입니다.")
 
+        if (participation.week and (1 shl (6 - LocalDate.now().dayOfWeek.value)) == 0)
+            throw IllegalArgumentException("참여하지 않는 요일은 체크할 수 없습니다.")
+
         checkedRoutineRepository.save(CheckedRoutine(
             id = null,
             participation = participation,
